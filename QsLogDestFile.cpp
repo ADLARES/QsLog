@@ -170,8 +170,12 @@ void QsLogging::FileDestination::write(const LogMessage& message)
         mOutputStream.setCodec(QTextCodec::codecForName("UTF-8"));
     }
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     mOutputStream << utf8Message << endl;
     mOutputStream.flush();
+#else
+    mOutputStream << utf8Message << Qt::endl;
+#endif
 }
 
 bool QsLogging::FileDestination::isValid()
