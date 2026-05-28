@@ -42,11 +42,11 @@ DestinationPtr DestinationFactory::MakeFileDestination(const QString& filePath,
     const MaxOldLogCount &oldLogsToKeep)
 {
     if (EnableLogRotation == rotation) {
-        QScopedPointer<SizeRotationStrategy> logRotation(new SizeRotationStrategy);
+        auto logRotation = std::make_unique<SizeRotationStrategy>();
         logRotation->setMaximumSizeInBytes(sizeInBytesToRotateAfter.size);
         logRotation->setBackupCount(oldLogsToKeep.count);
 
-        return DestinationPtr(new FileDestination(filePath, RotationStrategyPtr(logRotation.take())));
+        return DestinationPtr(new FileDestination(filePath, RotationStrategyPtr(logRotation.release())));
     }
 
     return DestinationPtr(new FileDestination(filePath, RotationStrategyPtr(new NullRotationStrategy)));
